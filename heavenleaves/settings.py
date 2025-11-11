@@ -13,16 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-development-key-change-in-production')
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1',
-    '.vercel.app',
-    '.now.sh',
-    '.onrender.com',
-    # Add your actual domain here
-    'yourdomain.com',
-    'www.yourdomain.com'
-]
+ALLOWED_HOSTS = ['.vercel.app', 'www.heavenleaves.com', 'heavenleaves.com', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -108,32 +99,68 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+# Media files configuration for Supabase
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'heavenapp' / 'templates' / 'assets',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files configuration for Supabase
-SUPABASE_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
-if SUPABASE_ACCESS_KEY_ID:
-    # Use Supabase storage in production
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    
-    AWS_ACCESS_KEY_ID = SUPABASE_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'heavenleaves-media')
-    AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_ENDPOINT_URL')
-    AWS_S3_REGION_NAME = os.environ.get('SUPABASE_REGION', 'us-east-1')
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = 'public-read'
-    AWS_QUERYSTRING_AUTH = False
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+SUPABASE_BUCKET = 'heavenleaves'  # Your single bucket name
 
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/'
+if SUPABASE_URL and SUPABASE_KEY:
+    # Use Supabase storage in production
+    from supabase import create_client
+    
+    # Initialize Supabase client
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    
+    # URLs for static and media files in the same bucket
+    # STATIC_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/static/'
+    # MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/media/'
+    
+    # For file uploads, you can use a custom storage backend
+    DEFAULT_FILE_STORAGE = 'heavenleaves.storage_backends.SupabaseStorage'
+    
 else:
     # Local media storage for development
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
+
+# Keep your existing static files configuration
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'heavenapp' / 'templates' / 'assets',
+# ]
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'heavenapp' / 'templates' / 'assets',
+# ]
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# # Media files configuration for Supabase
+# SUPABASE_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
+# if SUPABASE_ACCESS_KEY_ID:
+#     # Use Supabase storage in production
+#     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    
+#     AWS_ACCESS_KEY_ID = SUPABASE_ACCESS_KEY_ID
+#     AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
+#     AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'heavenleaves-media')
+#     AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_ENDPOINT_URL')
+#     AWS_S3_REGION_NAME = os.environ.get('SUPABASE_REGION', 'us-east-1')
+#     AWS_S3_FILE_OVERWRITE = False
+#     AWS_DEFAULT_ACL = 'public-read'
+#     AWS_QUERYSTRING_AUTH = False
+
+#     MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/'
+# else:
+#     # Local media storage for development
+#     MEDIA_URL = '/media/'
+#     MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
