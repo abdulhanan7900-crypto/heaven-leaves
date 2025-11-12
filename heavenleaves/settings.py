@@ -111,56 +111,18 @@ SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 SUPABASE_BUCKET = 'heavenleaves'  # Your single bucket name
 
 if SUPABASE_URL and SUPABASE_KEY:
-    # Use Supabase storage in production
-    from supabase import create_client
-    
-    # Initialize Supabase client
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    
-    # URLs for static and media files in the same bucket
-    # STATIC_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/static/'
-    # MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/media/'
-    
-    # For file uploads, you can use a custom storage backend
-    DEFAULT_FILE_STORAGE = 'heavenleaves.storage_backends.SupabaseStorage'
-    
+    # Use Supabase for static files in production
+    STATIC_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/static/'
 else:
-    # Local media storage for development
+    # Local static files for development
+    STATIC_URL = '/static/'
+
+# Media files configuration
+if SUPABASE_URL and SUPABASE_KEY:
+    MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/media/'
+else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
-
-# Keep your existing static files configuration
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'heavenapp' / 'templates' / 'assets',
-# ]
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'heavenapp' / 'templates' / 'assets',
-# ]
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# # Media files configuration for Supabase
-# SUPABASE_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
-# if SUPABASE_ACCESS_KEY_ID:
-#     # Use Supabase storage in production
-#     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    
-#     AWS_ACCESS_KEY_ID = SUPABASE_ACCESS_KEY_ID
-#     AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
-#     AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'heavenleaves-media')
-#     AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_ENDPOINT_URL')
-#     AWS_S3_REGION_NAME = os.environ.get('SUPABASE_REGION', 'us-east-1')
-#     AWS_S3_FILE_OVERWRITE = False
-#     AWS_DEFAULT_ACL = 'public-read'
-#     AWS_QUERYSTRING_AUTH = False
-
-#     MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/'
-# else:
-#     # Local media storage for development
-#     MEDIA_URL = '/media/'
-#     MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
