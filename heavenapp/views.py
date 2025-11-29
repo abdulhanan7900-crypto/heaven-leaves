@@ -61,3 +61,24 @@ def about(request):
 
 def contact(request):
     return render(request, 'contact.html')
+
+def login(request):
+    return render(request, 'login.html')
+
+def register(request):
+    return render(request, 'register.html')
+
+def account(request):
+    return render(request, 'account.html')
+
+def cart(request):
+    return render(request, 'cart.html')
+
+def category(request):
+    return render(request, 'category.html')
+
+def checkout(request):
+    return render(request, 'checkout.html')
+
+def product_details(request):
+    return render(request, 'product-details.html')

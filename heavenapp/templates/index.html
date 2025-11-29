@@ -145,7 +145,7 @@
                   <p class="mb-0">Access account &amp; manage orders</p>
                 </div>
                 <div class="dropdown-body">
-                  <a class="dropdown-item d-flex align-items-center" href="account.html">
+                  <a class="dropdown-item d-flex align-items-center" href="{% url 'account' %}">
                     <i class="bi bi-person-circle me-2"></i>
                     <span>My Profile</span>
                   </a>
@@ -163,8 +163,8 @@
                   </a>
                 </div>
                 <div class="dropdown-footer">
-                  <a href="register.html" class="btn btn-primary w-100 mb-2">Sign In</a>
-                  <a href="login.html" class="btn btn-outline-primary w-100">Register</a>
+                  <a href="{% url 'login' %}" class="btn btn-primary w-100 mb-2">Sign In</a>
+                  <a href="{% url 'register' %}" class="btn btn-outline-primary w-100">Register</a>
                 </div>
               </div>
             </div>
@@ -176,7 +176,7 @@
             </a>
 
             <!-- Cart -->
-            <a href="cart.html" class="header-action-btn">
+            <a href="{% url 'cart' %}" class="header-action-btn">
               <i class="bi bi-cart3"></i>
               <span class="badge">3</span>
             </a>
@@ -194,12 +194,12 @@
       <div class="container-fluid container-xl position-relative">
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="category.html">Category</a></li>
-            <li><a href="product-details.html">Product Details</a></li>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="checkout.html">Checkout</a></li>
+            <li><a href="{% url 'home' %}" class="active">Home</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'category' %}">Category</a></li>
+            <li><a href="{% url 'product-details' %}">Product Details</a></li>
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            <li><a href="{% url 'checkout' %}">Checkout</a></li>
             <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
                 <li><a href="#">Dropdown 1</a></li>
@@ -774,7 +774,7 @@
 
             </li><!-- End Products Mega Menu 2 -->
 
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
 
           </ul>
         </nav>
@@ -988,7 +988,7 @@
               </div>
               <div class="product-info">
                 <div class="product-category">Premium Collection</div>
-                <h4 class="product-name"><a href="product-details.html">Mauris blandit aliquet elit</a></h4>
+                <h4 class="product-name"><a href="{% url 'product-details' %}">Mauris blandit aliquet elit</a></h4>
                 <div class="product-rating">
                   <div class="stars">
                     <i class="bi bi-star-fill"></i>
@@ -1031,7 +1031,7 @@
               </div>
               <div class="product-info">
                 <div class="product-category">Best Sellers</div>
-                <h4 class="product-name"><a href="product-details.html">Sed do eiusmod tempor incididunt</a></h4>
+                <h4 class="product-name"><a href="{% url 'product-details' %}">Sed do eiusmod tempor incididunt</a></h4>
                 <div class="product-rating">
                   <div class="stars">
                     <i class="bi bi-star-fill"></i>
@@ -1076,7 +1076,7 @@
               </div>
               <div class="product-info">
                 <div class="product-category">New Arrivals</div>
-                <h4 class="product-name"><a href="product-details.html">Lorem ipsum dolor sit amet consectetur</a></h4>
+                <h4 class="product-name"><a href="{% url 'product-details' %}">Lorem ipsum dolor sit amet consectetur</a></h4>
                 <div class="product-rating">
                   <div class="stars">
                     <i class="bi bi-star-fill"></i>
@@ -1119,7 +1119,7 @@
               </div>
               <div class="product-info">
                 <div class="product-category">Designer Series</div>
-                <h4 class="product-name"><a href="product-details.html">Ut enim ad minim veniam quis</a></h4>
+                <h4 class="product-name"><a href="{% url 'product-details' %}">Ut enim ad minim veniam quis</a></h4>
                 <div class="product-rating">
                   <div class="stars">
                     <i class="bi bi-star-fill"></i>
@@ -1557,12 +1557,12 @@
             <div class="footer-widget">
               <h4>Shop</h4>
               <ul class="footer-links">
-                <li><a href="category.html">New Arrivals</a></li>
-                <li><a href="category.html">Bestsellers</a></li>
-                <li><a href="category.html">Women's Clothing</a></li>
-                <li><a href="category.html">Men's Clothing</a></li>
-                <li><a href="category.html">Accessories</a></li>
-                <li><a href="category.html">Sale</a></li>
+                <li><a href="{% url 'category' %}">New Arrivals</a></li>
+                <li><a href="{% url 'category' %}">Bestsellers</a></li>
+                <li><a href="{% url 'category' %}">Women's Clothing</a></li>
+                <li><a href="{% url 'category' %}">Men's Clothing</a></li>
+                <li><a href="{% url 'category' %}">Accessories</a></li>
+                <li><a href="{% url 'category' %}">Sale</a></li>
               </ul>
             </div>
           </div>
@@ -1576,7 +1576,7 @@
                 <li><a href="shiping-info.html">Shipping Info</a></li>
                 <li><a href="return-policy.html">Returns &amp; Exchanges</a></li>
                 <li><a href="#">Size Guide</a></li>
-                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact Us</a></li>
               </ul>
             </div>
           </div>
