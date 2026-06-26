@@ -42,7 +42,7 @@ def home(request):
 @ensure_csrf_cookie
 def category_page(request):
     categories = Category.objects.all()
-    products = Product.objects.filter(in_stock=True, stock__gt=0)
+    products = Product.objects.all()
     selected_category = None
     
     # Filter by category slug

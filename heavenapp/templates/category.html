@@ -427,12 +427,14 @@
                           <a href="{% url 'product_details' product.slug %}" class="action-btn" data-bs-toggle="tooltip" title="Quick View">
                             <i class="bi bi-eye"></i>
                           </a>
-                          <button type="button" class="action-btn add-to-cart-btn" data-product-id="{{ product.id }}" data-bs-toggle="tooltip" title="Add to Cart">
+                          <button type="button" class="action-btn add-to-cart-btn{% if product.stock == 0 %} disabled-oos{% endif %}" data-product-id="{{ product.id }}" data-bs-toggle="tooltip" title="{% if product.stock == 0 %}Out of Stock{% else %}Add to Cart{% endif %}"{% if product.stock == 0 %} disabled{% endif %}>
                             <i class="bi bi-cart-plus"></i>
                           </button>
                         </div>
                       </div>
-                      {% if product.compare_price %}
+                      {% if product.stock == 0 %}
+                      <div class="product-badge out-of-stock">Out of Stock</div>
+                      {% elif product.compare_price %}
                       <div class="product-badge sale">-{{ product.get_discount_percentage }}%</div>
                       {% elif product.featured %}
                       <div class="product-badge new">Featured</div>
