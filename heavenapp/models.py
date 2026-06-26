@@ -1,6 +1,14 @@
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.core.cache import cache
 from django.utils.text import slugify
 from decimal import Decimal
+
+
+def invalidate_header_cache():
+    """Clear the cached header navigation data."""
+    cache.delete('header_categories_context')
 
 
 class Category(models.Model):
@@ -201,3 +209,12 @@ class OrderItem(models.Model):
         if self.price is None or self.quantity is None:
             return Decimal('0')
         return self.price * self.quantity
+
+
+# Invalidate header cache when categories or products change
+@receiver(post_save, sender=Category)
+@receiver(post_delete, sender=Category)
+@receiver(post_save, sender=Product)
+@receiver(post_delete, sender=Product)
+def clear_header_cache(sender, instance, **kwargs):
+    invalidate_header_cache()

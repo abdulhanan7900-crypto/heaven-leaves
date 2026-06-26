@@ -71,6 +71,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'heavenleaves.wsgi.application'
 
+# Cache configuration (in-memory cache per process)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 # Database configuration
 if os.environ.get('DATABASE_URL'):
     DATABASES = {

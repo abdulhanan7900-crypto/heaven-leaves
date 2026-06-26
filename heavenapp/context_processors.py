@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from .models import Cart, Category, Product
 
 
@@ -22,19 +23,30 @@ def cart_context(request):
 
 
 def categories_context(request):
-    """Add categories and megamenu products to every template context."""
-    categories = Category.objects.all()
+    """Add categories and megamenu products to every template context.
+
+    Results are cached for 5 minutes to avoid repeated database queries.
+    """
+    cache_key = 'header_categories_context'
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    categories = list(Category.objects.prefetch_related('products'))
     # Featured products for megamenu
-    nav_featured = Product.objects.filter(featured=True, in_stock=True, stock__gt=0)[:4]
+    nav_featured = list(Product.objects.filter(featured=True, in_stock=True, stock__gt=0)[:4])
     # New arrivals for megamenu
-    nav_new = Product.objects.filter(in_stock=True, stock__gt=0).order_by('-created_at')[:4]
+    nav_new = list(Product.objects.filter(in_stock=True, stock__gt=0).order_by('-created_at')[:4])
     # Sale/discounted products for megamenu
-    nav_sale = Product.objects.filter(
+    nav_sale = list(Product.objects.filter(
         in_stock=True, stock__gt=0
-    ).exclude(compare_price=None).order_by('-created_at')[:4]
-    return {
+    ).exclude(compare_price=None).order_by('-created_at')[:4])
+
+    result = {
         'all_categories': categories,
         'nav_featured': nav_featured,
         'nav_new': nav_new,
         'nav_sale': nav_sale,
     }
+    cache.set(cache_key, result, timeout=300)
+    return result

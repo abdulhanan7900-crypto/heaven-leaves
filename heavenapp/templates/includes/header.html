@@ -1,0 +1,288 @@
+{% load static %}
+{% with current_url=request.resolver_match.url_name %}
+<header id="header" class="header sticky-top">
+  <!-- Top Bar -->
+  <div class="top-bar py-2">
+    <div class="container-fluid container-xl">
+      <div class="row align-items-center">
+        <div class="col-lg-4 d-none d-lg-flex">
+          <div class="top-bar-item">
+            <i class="bi bi-telephone-fill me-2"></i>
+            <span>Need help? Call us: </span>
+            <a href="tel:+923001234567">+92 (300) 123-4567</a>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 text-center">
+          <div class="announcement-slider swiper init-swiper">
+            <script type="application/json" class="swiper-config">
+              {
+                "loop": true,
+                "speed": 600,
+                "autoplay": {
+                  "delay": 5000
+                },
+                "slidesPerView": 1,
+                "direction": "vertical",
+                "effect": "slide"
+              }
+            </script>
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">Free delivery on orders over Rs. 5,000</div>
+              <div class="swiper-slide">30 days money back guarantee.</div>
+              <div class="swiper-slide">Exclusive deals for Pakistani customers</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 d-none d-lg-block">
+          <div class="d-flex justify-content-end">
+            <div class="top-bar-item dropdown me-3">
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-translate me-2"></i>EN
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#"><i class="bi bi-check2 me-2 selected-icon"></i>English</a></li>
+                <li><a class="dropdown-item" href="#">Español</a></li>
+                <li><a class="dropdown-item" href="#">Français</a></li>
+                <li><a class="dropdown-item" href="#">Deutsch</a></li>
+              </ul>
+            </div>
+            <div class="top-bar-item dropdown">
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-currency-exchange me-2"></i>PKR
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#"><i class="bi bi-check2 me-2 selected-icon"></i>PKR</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <div class="main-header">
+    <div class="container-fluid container-xl">
+      <div class="d-flex py-3 align-items-center justify-content-between">
+
+        <!-- Logo -->
+        <a href="{% url 'home' %}" class="logo d-flex align-items-center">
+          <h1 class="sitename" style="color:#2d6a4f;">Heaven Leaves</h1>
+        </a>
+
+        <!-- Search -->
+        <form class="search-form desktop-search-form" action="{% url 'category' %}" method="get">
+          <div class="input-group">
+            <input type="text" class="form-control" name="q" placeholder="Search for products" value="{{ query|default:'' }}">
+            <button class="btn" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Actions -->
+        <div class="header-actions d-flex align-items-center justify-content-end">
+
+          <!-- Mobile Search Toggle -->
+          <button class="header-action-btn mobile-search-toggle d-xl-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearch" aria-expanded="false" aria-controls="mobileSearch">
+            <i class="bi bi-search"></i>
+          </button>
+
+          <!-- Account -->
+          <div class="dropdown account-dropdown">
+            <button class="header-action-btn" data-bs-toggle="dropdown">
+              <i class="bi bi-person"></i>
+            </button>
+            <div class="dropdown-menu">
+              <div class="dropdown-header">
+                <h6>Welcome to <span class="sitename">Heaven Leaves</span></h6>
+                <p class="mb-0">Access account &amp; manage orders</p>
+              </div>
+              <div class="dropdown-body">
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'account' %}">
+                  <i class="bi bi-person-circle me-2"></i>
+                  <span>My Profile</span>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'account' %}">
+                  <i class="bi bi-bag-check me-2"></i>
+                  <span>My Orders</span>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'account' %}">
+                  <i class="bi bi-heart me-2"></i>
+                  <span>My Wishlist</span>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'account' %}">
+                  <i class="bi bi-gear me-2"></i>
+                  <span>Settings</span>
+                </a>
+              </div>
+              <div class="dropdown-footer">
+                <a href="{% url 'login' %}" class="btn btn-primary w-100 mb-2">Sign In</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-primary w-100">Register</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wishlist -->
+          <a href="{% url 'account' %}" class="header-action-btn d-none d-md-block">
+            <i class="bi bi-heart"></i>
+            <span class="badge">0</span>
+          </a>
+
+          <!-- Cart -->
+          <a href="{% url 'cart' %}" class="header-action-btn">
+            <i class="bi bi-cart3"></i>
+            <span class="badge cart-badge">{{ cart_item_count }}</span>
+          </a>
+
+          <!-- Mobile Navigation Toggle -->
+          <i class="mobile-nav-toggle d-xl-none bi bi-list me-0"></i>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="header-nav">
+    <div class="container-fluid container-xl position-relative">
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'home' %}" {% if current_url == 'home' %}class="active"{% endif %}>Home</a></li>
+          <li><a href="{% url 'about' %}" {% if current_url == 'about' %}class="active"{% endif %}>About</a></li>
+          <li><a href="{% url 'category' %}" {% if current_url == 'category' %}class="active"{% endif %}>Shop</a></li>
+          <li><a href="{% url 'cart' %}" {% if current_url == 'cart' %}class="active"{% endif %}>Cart</a></li>
+          <li><a href="{% url 'checkout' %}" {% if current_url == 'checkout' %}class="active"{% endif %}>Checkout</a></li>
+          <li class="dropdown category-nav-item">
+            <a href="{% url 'category' %}" class="category-link" {% if current_url == 'category' %}class="active"{% endif %}><span>Category</span></a>
+            <a href="#" class="dropdown-toggle category-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-chevron-down toggle-dropdown"></i>
+            </a>
+            <ul>
+              {% for cat in all_categories %}
+              <li><a href="{% url 'category' %}?category={{ cat.slug }}" {% if selected_category and selected_category.slug == cat.slug %}class="fw-bold"{% endif %}>{{ cat.name }}</a></li>
+              {% empty %}
+              <li><a href="{% url 'category' %}">All Products</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          <!-- Products Mega Menu - Dynamic -->
+          <li class="products-megamenu-1"><a href="#"><span>Products</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+
+            <!-- Mobile View -->
+            <ul class="mobile-megamenu">
+              <li><a href="{% url 'category' %}">All Products</a></li>
+              {% for cat in all_categories %}
+              <li><a href="{% url 'category' %}?category={{ cat.slug }}">{{ cat.name }}</a></li>
+              {% endfor %}
+            </ul><!-- End Mobile View -->
+
+            <!-- Desktop Mega Menu -->
+            <div class="desktop-megamenu">
+              <div class="megamenu-tabs">
+                <ul class="nav nav-tabs" id="productMegaMenuTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="featured-tab" data-bs-toggle="tab" data-bs-target="#featured-content-1862" type="button" aria-selected="true" role="tab">Featured</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="new-tab" data-bs-toggle="tab" data-bs-target="#new-content-1862" type="button" aria-selected="false" tabindex="-1" role="tab">New Arrivals</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sale-tab" data-bs-toggle="tab" data-bs-target="#sale-content-1862" type="button" aria-selected="false" tabindex="1" role="tab">Sale</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category-content-1862" type="button" aria-selected="false" tabindex="-1" role="tab">Categories</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="megamenu-content tab-content">
+                <div class="tab-pane fade show active" id="featured-content-1862" role="tabpanel" aria-labelledby="featured-tab">
+                  <div class="product-grid">
+                    {% for p in nav_featured %}
+                    <div class="product-card">
+                      <div class="product-image"><img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy"></div>
+                      <div class="product-info">
+                        <h5>{{ p.name }}</h5>
+                        <p class="price">Rs. {{ p.price }}</p>
+                        <a href="{% url 'product_details' p.slug %}" class="btn-view">View Product</a>
+                      </div>
+                    </div>
+                    {% empty %}<p class="p-3 text-muted">No featured products yet.</p>{% endfor %}
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="new-content-1862" role="tabpanel" aria-labelledby="new-tab">
+                  <div class="product-grid">
+                    {% for p in nav_new %}
+                    <div class="product-card">
+                      <div class="product-image"><img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy"><span class="badge-new">New</span></div>
+                      <div class="product-info">
+                        <h5>{{ p.name }}</h5>
+                        <p class="price">Rs. {{ p.price }}</p>
+                        <a href="{% url 'product_details' p.slug %}" class="btn-view">View Product</a>
+                      </div>
+                    </div>
+                    {% empty %}<p class="p-3 text-muted">No new products yet.</p>{% endfor %}
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="sale-content-1862" role="tabpanel" aria-labelledby="sale-tab">
+                  <div class="product-grid">
+                    {% for p in nav_sale %}
+                    <div class="product-card">
+                      <div class="product-image"><img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy"><span class="badge-sale">-{{ p.discount_percent }}%</span></div>
+                      <div class="product-info">
+                        <h5>{{ p.name }}</h5>
+                        <p class="price"><span class="original-price">Rs. {{ p.compare_price }}</span> Rs. {{ p.price }}</p>
+                        <a href="{% url 'product_details' p.slug %}" class="btn-view">View Product</a>
+                      </div>
+                    </div>
+                    {% empty %}<p class="p-3 text-muted">No sale products yet.</p>{% endfor %}
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="category-content-1862" role="tabpanel" aria-labelledby="category-tab">
+                  <div class="category-grid">
+                    {% for cat in all_categories %}
+                    <div class="category-column">
+                      <h4><a href="{% url 'category' %}?category={{ cat.slug }}">{{ cat.name }}</a></h4>
+                      <ul>
+                        {% for prod in cat.products.all|slice:":5" %}
+                        <li><a href="{% url 'product_details' prod.slug %}">{{ prod.name }}</a></li>
+                        {% endfor %}
+                        <li><a href="{% url 'category' %}?category={{ cat.slug }}">View all &rarr;</a></li>
+                      </ul>
+                    </div>
+                    {% empty %}
+                    <div class="category-column"><h4>All Products</h4><ul><li><a href="{% url 'category' %}">Browse Products</a></li></ul></div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div><!-- End Desktop Mega Menu -->
+
+          </li><!-- End Products Mega Menu -->
+
+          <li><a href="{% url 'contact' %}" {% if current_url == 'contact' %}class="active"{% endif %}>Contact</a></li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile Search Form -->
+  <div class="collapse" id="mobileSearch">
+    <div class="container">
+      <form class="search-form" action="{% url 'category' %}" method="get">
+        <div class="input-group">
+          <input type="text" class="form-control" name="q" placeholder="Search for products" value="{{ query|default:'' }}">
+          <button class="btn" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</header>
+{% endwith %}
