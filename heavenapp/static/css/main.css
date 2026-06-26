@@ -5013,7 +5013,8 @@ section,
   display: inline-block;
 }
 
-.cart .cart-items .cart-item .product-info .product-details .cart-remove-item {
+.cart .cart-items .cart-item .product-info .product-details .cart-remove-item,
+button.cart-remove-item {
   background: none;
   border: none;
   outline: none;
@@ -5028,7 +5029,8 @@ section,
   cursor: pointer;
 }
 
-.cart .cart-items .cart-item .product-info .product-details .cart-remove-item:hover {
+.cart .cart-items .cart-item .product-info .product-details .cart-remove-item:hover,
+button.cart-remove-item:hover {
   color: #dc3545;
 }
 
@@ -5072,6 +5074,12 @@ section,
 .cart .cart-items .cart-item .quantity-selector .cart-qty-btn:hover {
   background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
   color: var(--accent-color);
+}
+
+.cart .cart-items .cart-item .quantity-selector .cart-qty-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .cart .cart-items .cart-item .quantity-selector .quantity-btn:active,
@@ -5491,6 +5499,30 @@ section,
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--heading-color);
+}
+
+/* Pakistani phone prefix styling */
+.checkout .checkout-section .section-content .form-group .pk-code {
+  background: color-mix(in srgb, var(--accent-color), transparent 88%);
+  color: var(--heading-color);
+  border: 2px solid color-mix(in srgb, var(--default-color), transparent 85%);
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 14px;
+}
+
+.checkout .checkout-section .section-content .form-group .input-group .form-control {
+  border-radius: 0 12px 12px 0;
+}
+
+.checkout .checkout-section .section-content .form-group .input-group .form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.checkout .checkout-section .section-content .form-group .input-group .form-control.is-valid {
+  border-color: #198754;
 }
 
 .checkout .checkout-section .section-content .form-group .form-control,

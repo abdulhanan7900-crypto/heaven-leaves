@@ -783,26 +783,47 @@
       });
     }
 
-    // Phone number input mask
+    // Pakistani phone number input mask (+92 XXXXXXXXXX — 10 digits after country code)
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
+      // Only allow digits, max 10
       phoneInput.addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length > 10) value = value.slice(0, 10);
-
-        // Format as (XXX) XXX-XXXX
-        if (value.length > 0) {
-          if (value.length <= 3) {
-            value = '(' + value;
-          } else if (value.length <= 6) {
-            value = '(' + value.slice(0, 3) + ') ' + value.slice(3);
-          } else {
-            value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6);
-          }
-        }
-
         e.target.value = value;
+        // Live validation
+        const errorEl = document.getElementById('phone-error');
+        if (value.length > 0 && value.length < 10) {
+          phoneInput.classList.add('is-invalid');
+          if (errorEl) errorEl.style.display = 'block';
+        } else if (value.length === 10) {
+          phoneInput.classList.remove('is-invalid');
+          phoneInput.classList.add('is-valid');
+          if (errorEl) errorEl.style.display = 'none';
+        } else {
+          phoneInput.classList.remove('is-invalid', 'is-valid');
+          if (errorEl) errorEl.style.display = 'none';
+        }
       });
+
+      // On submit store full number with +92 prefix in a hidden field
+      const checkoutForm = phoneInput.closest('form');
+      if (checkoutForm) {
+        checkoutForm.addEventListener('submit', function(e) {
+          const digits = phoneInput.value.replace(/\D/g, '');
+          const errorEl = document.getElementById('phone-error');
+          if (digits.length !== 10) {
+            e.preventDefault();
+            phoneInput.classList.add('is-invalid');
+            if (errorEl) { errorEl.style.display = 'block'; }
+            phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            phoneInput.focus();
+            return;
+          }
+          // Prepend +92 before submission
+          phoneInput.value = '+92' + digits;
+        }, true); // capture phase so it runs before other submit handlers
+      }
     }
 
     // ZIP code input mask (5 digits)

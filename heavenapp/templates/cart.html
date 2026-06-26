@@ -111,7 +111,7 @@
                         <i class="bi bi-dash"></i>
                       </button>
                       <input type="number" id="cart-qty-{{ item.id }}" class="cart-qty-input" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" data-item-id="{{ item.id }}" readonly>
-                      <button class="cart-qty-btn increase" type="button" data-item-id="{{ item.id }}" aria-label="Increase quantity">
+                      <button class="cart-qty-btn increase" type="button" data-item-id="{{ item.id }}" data-max="{{ item.product.stock }}" aria-label="Increase quantity"{% if item.quantity >= item.product.stock %} disabled{% endif %}>
                         <i class="bi bi-plus"></i>
                       </button>
                     </div>
@@ -330,6 +330,10 @@
             if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = formatRs(data.item_total);
             updateCartSummary(data);
             updateCartBadges(data.cart_count);
+            // Disable + when at max stock, re-enable − since qty > 0
+            if (newVal >= max) btn.disabled = true;
+            const decreaseBtn = document.querySelector('.cart-qty-btn.decrease[data-item-id="' + itemId + '"]');
+            if (decreaseBtn) decreaseBtn.disabled = false;
           } else {
             handleCartError(data, input, oldValue);
           }
@@ -364,6 +368,10 @@
             if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = formatRs(data.item_total);
             updateCartSummary(data);
             updateCartBadges(data.cart_count);
+            // Re-enable + since qty is now below max; disable − if at min
+            const increaseBtn = document.querySelector('.cart-qty-btn.increase[data-item-id="' + itemId + '"]');
+            if (increaseBtn) increaseBtn.disabled = false;
+            if (newVal <= 1) btn.disabled = true;
           } else {
             handleCartError(data, input, oldValue);
           }
