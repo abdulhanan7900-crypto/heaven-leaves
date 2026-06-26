@@ -85,7 +85,7 @@
 
               {% if cart_items %}
               {% for item in cart_items %}
-              <div class="cart-item" data-item-id="{{ item.id }}">
+              <div class="cart-item" data-item-id="{{ item.id }}" id="cart-row-{{ item.id }}">
                 <div class="row align-items-center">
                   <div class="col-lg-6 col-12 mt-3 mt-lg-0 mb-lg-0 mb-3">
                     <div class="product-info d-flex align-items-center">
@@ -107,18 +107,18 @@
                   </div>
                   <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
                     <div class="quantity-selector">
-                      <button class="cart-qty-btn decrease" type="button" data-item-id="{{ item.id }}">
+                      <button class="cart-qty-btn decrease" type="button" data-item-id="{{ item.id }}" aria-label="Decrease quantity">
                         <i class="bi bi-dash"></i>
                       </button>
-                      <input type="number" class="cart-qty-input" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" data-item-id="{{ item.id }}">
-                      <button class="cart-qty-btn increase" type="button" data-item-id="{{ item.id }}">
+                      <input type="number" id="cart-qty-{{ item.id }}" class="cart-qty-input" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" data-item-id="{{ item.id }}" readonly>
+                      <button class="cart-qty-btn increase" type="button" data-item-id="{{ item.id }}" aria-label="Increase quantity">
                         <i class="bi bi-plus"></i>
                       </button>
                     </div>
                   </div>
                   <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
                     <div class="item-total">
-                      <span>Rs. {{ item.total_price }}</span>
+                      <span id="cart-item-total-{{ item.id }}">Rs. {{ item.total_price }}</span>
                     </div>
                   </div>
                 </div>
@@ -262,59 +262,116 @@
       return cookieValue;
     }
 
-    function updateCartSummary() {
-      fetch("{% url 'cart_data' %}")
-        .then(response => response.json())
-        .then(data => {
-          if (data.subtotal !== undefined) {
-            const subtotalEl = document.getElementById('cart-subtotal');
-            const taxEl = document.getElementById('cart-tax');
-            const totalEl = document.getElementById('cart-total');
-            if (subtotalEl) subtotalEl.textContent = 'Rs. ' + data.subtotal;
-            if (taxEl) taxEl.textContent = 'Rs. ' + data.tax;
-            if (totalEl) totalEl.textContent = 'Rs. ' + data.grand_total;
-          }
-          const badges = document.querySelectorAll('.cart-badge');
-          badges.forEach(badge => {
-            if (data.cart_count !== undefined) {
-              badge.textContent = data.cart_count;
-            }
-          });
-        });
+    function formatRs(value) {
+      return 'Rs. ' + value;
     }
 
-    // Quantity input: no change listener here — buttons handle updates directly to avoid double-fire
+    function updateCartSummary(data) {
+      const subtotalEl = document.getElementById('cart-subtotal');
+      const taxEl = document.getElementById('cart-tax');
+      const totalEl = document.getElementById('cart-total');
+      if (subtotalEl && data.subtotal !== undefined) subtotalEl.textContent = formatRs(data.subtotal);
+      if (taxEl && data.tax !== undefined) taxEl.textContent = formatRs(data.tax);
+      if (totalEl && data.grand_total !== undefined) totalEl.textContent = formatRs(data.grand_total);
+    }
 
-    // Decrease button
-    document.querySelectorAll('.cart-qty-btn.decrease').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const itemId = this.dataset.itemId;
-        const input = document.querySelector('.cart-qty-input[data-item-id="' + itemId + '"]');
-        const newVal = parseInt(input.value) - 1;
-        if (newVal < 1) return;
-        input.value = newVal;
-        fetch("{% url 'cart_update' %}", {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
-          body: JSON.stringify({'item_id': itemId, 'quantity': newVal})
-        }).then(r => r.json()).then(data => { if (data.success) location.reload(); });
+    function updateCartBadges(count) {
+      document.querySelectorAll('.cart-badge').forEach(badge => {
+        badge.textContent = count;
       });
-    });
+    }
 
-    // Increase button — calls update directly (no dispatchEvent to avoid double-fire)
+    function showEmptyCart() {
+      const cartItemsContainer = document.querySelector('.cart-items');
+      if (cartItemsContainer) {
+        cartItemsContainer.innerHTML = `
+          <div class="empty-cart-message text-center py-5">
+            <i class="bi bi-cart-x" style="font-size: 4rem; color: #ccc;"></i>
+            <h4 class="mt-3">Your cart is empty</h4>
+            <p>Looks like you haven't added anything to your cart yet.</p>
+            <a href="{% url 'category' %}" class="btn btn-primary">Start Shopping</a>
+          </div>`;
+      }
+      const checkoutBtn = document.querySelector('.checkout-button .btn');
+      if (checkoutBtn) checkoutBtn.classList.add('disabled');
+    }
+
+    function setLoading(btn, loading) {
+      btn.disabled = loading;
+      btn.style.opacity = loading ? '0.6' : '1';
+    }
+
+    function handleCartError(data, input, oldValue) {
+      if (data.error) alert(data.error);
+      if (input && oldValue !== undefined) input.value = oldValue;
+    }
+
+    // Increase quantity
     document.querySelectorAll('.cart-qty-btn.increase').forEach(function(btn) {
       btn.addEventListener('click', function() {
         const itemId = this.dataset.itemId;
-        const input = document.querySelector('.cart-qty-input[data-item-id="' + itemId + '"]');
+        const input = document.getElementById('cart-qty-' + itemId);
         const max = parseInt(input.max);
-        const newVal = parseInt(input.value) + 1;
+        const oldValue = parseInt(input.value);
+        const newVal = oldValue + 1;
         if (newVal > max) return;
-        input.value = newVal;
+        setLoading(btn, true);
         fetch("{% url 'cart_update' %}", {
           method: 'POST',
           headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
           body: JSON.stringify({'item_id': itemId, 'quantity': newVal})
-        }).then(r => r.json()).then(data => { if (data.success) location.reload(); });
+        })
+        .then(r => r.json())
+        .then(data => {
+          setLoading(btn, false);
+          if (data.success) {
+            input.value = newVal;
+            const itemTotalEl = document.getElementById('cart-item-total-' + itemId);
+            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = formatRs(data.item_total);
+            updateCartSummary(data);
+            updateCartBadges(data.cart_count);
+          } else {
+            handleCartError(data, input, oldValue);
+          }
+        })
+        .catch(() => {
+          setLoading(btn, false);
+          input.value = oldValue;
+        });
+      });
+    });
+
+    // Decrease quantity
+    document.querySelectorAll('.cart-qty-btn.decrease').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const itemId = this.dataset.itemId;
+        const input = document.getElementById('cart-qty-' + itemId);
+        const oldValue = parseInt(input.value);
+        const newVal = oldValue - 1;
+        if (newVal < 1) return;
+        setLoading(btn, true);
+        fetch("{% url 'cart_update' %}", {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+          body: JSON.stringify({'item_id': itemId, 'quantity': newVal})
+        })
+        .then(r => r.json())
+        .then(data => {
+          setLoading(btn, false);
+          if (data.success) {
+            input.value = newVal;
+            const itemTotalEl = document.getElementById('cart-item-total-' + itemId);
+            if (itemTotalEl && data.item_total !== undefined) itemTotalEl.textContent = formatRs(data.item_total);
+            updateCartSummary(data);
+            updateCartBadges(data.cart_count);
+          } else {
+            handleCartError(data, input, oldValue);
+          }
+        })
+        .catch(() => {
+          setLoading(btn, false);
+          input.value = oldValue;
+        });
       });
     });
 
@@ -322,39 +379,47 @@
     document.querySelectorAll('.cart-remove-item').forEach(function(btn) {
       btn.addEventListener('click', function() {
         const itemId = this.dataset.itemId;
+        if (!confirm('Remove this item from your cart?')) return;
+        setLoading(btn, true);
         fetch("{% url 'cart_remove' %}", {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
           body: JSON.stringify({'item_id': itemId})
         })
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
+          setLoading(btn, false);
           if (data.success) {
-            location.reload();
+            const row = document.getElementById('cart-row-' + itemId);
+            if (row) row.remove();
+            updateCartSummary(data);
+            updateCartBadges(data.cart_count);
+            if (data.cart_count === 0) showEmptyCart();
           }
-        });
+        })
+        .catch(() => setLoading(btn, false));
       });
     });
 
     // Clear cart
     document.querySelector('.clear-cart-btn')?.addEventListener('click', function() {
       if (!confirm('Clear all items from your cart?')) return;
+      const btn = this;
+      setLoading(btn, true);
       fetch("{% url 'cart_clear' %}", {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')}
+      })
+      .then(r => r.json())
+      .then(data => {
+        setLoading(btn, false);
+        if (data.success) {
+          updateCartSummary(data);
+          updateCartBadges(0);
+          showEmptyCart();
         }
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          location.reload();
-        }
-      });
+      .catch(() => setLoading(btn, false));
     });
   </script>
 

@@ -5037,9 +5037,7 @@ section,
 .cart .cart-items .cart-item .quantity-selector {
   display: inline-flex;
   align-items: center;
-  border: 1px solid color-mix(in srgb, var(--default-color), transparent 80%);
-  border-radius: 0.375rem;
-  overflow: hidden;
+  gap: 0.25rem;
 }
 
 .cart .cart-items .cart-item .quantity-selector .quantity-btn,
@@ -5068,21 +5066,22 @@ section,
 
 .cart .cart-items .cart-item .quantity-selector .quantity-input,
 .cart .cart-items .cart-item .quantity-selector .cart-qty-input {
-  width: 2.5rem;
+  width: 2rem;
   text-align: center;
   border: none;
-  border-left: 1px solid color-mix(in srgb, var(--default-color), transparent 80%);
-  border-right: 1px solid color-mix(in srgb, var(--default-color), transparent 80%);
   font-size: 0.875rem;
   color: var(--heading-color);
   font-weight: 600;
   padding: 0.25rem 0;
-  background-color: var(--surface-color);
+  background: transparent;
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .cart .cart-items .cart-item .quantity-selector .quantity-input:focus,
 .cart .cart-items .cart-item .quantity-selector .cart-qty-input:focus {
   outline: none;
+  box-shadow: none;
 }
 
 .cart .cart-items .cart-item .quantity-selector .quantity-input::-webkit-inner-spin-button,
@@ -5090,6 +5089,7 @@ section,
 .cart .cart-items .cart-item .quantity-selector .cart-qty-input::-webkit-inner-spin-button,
 .cart .cart-items .cart-item .quantity-selector .cart-qty-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
@@ -12625,16 +12625,29 @@ section,
   align-items: center;
 }
 
+.navmenu .category-nav-item .category-link,
+.navmenu .category-nav-item .category-toggle {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  padding: 0;
+}
+
 .navmenu .category-nav-item .category-link {
-  padding-right: 2px;
+  padding-right: 4px;
 }
 
 .navmenu .category-nav-item .category-toggle {
   padding-left: 2px;
+  font-size: 0.75rem;
 }
 
 .navmenu .category-nav-item .category-toggle::after {
   display: none;
+}
+
+.navmenu .category-nav-item .category-toggle i {
+  line-height: 1;
 }
 
 @media (max-width: 1199px) {

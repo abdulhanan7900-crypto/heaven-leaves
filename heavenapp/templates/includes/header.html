@@ -157,8 +157,8 @@
           <li><a href="{% url 'checkout' %}" {% if current_url == 'checkout' %}class="active"{% endif %}>Checkout</a></li>
           <li class="dropdown category-nav-item">
             <a href="{% url 'category' %}" class="category-link" {% if current_url == 'category' %}class="active"{% endif %}><span>Category</span></a>
-            <a href="#" class="dropdown-toggle category-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-chevron-down toggle-dropdown"></i>
+            <a href="#" class="category-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Category options">
+              <i class="bi bi-chevron-down"></i>
             </a>
             <ul>
               {% for cat in all_categories %}
