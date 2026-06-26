@@ -132,7 +132,16 @@ else:
 # Media files configuration
 if SUPABASE_URL and SUPABASE_KEY:
     MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/media/'
+    # Django 4.2+ uses STORAGES dict; also set legacy key for compatibility
     DEFAULT_FILE_STORAGE = 'heavenleaves.storage_backends.SupabaseStorage'
+    STORAGES = {
+        'default': {
+            'BACKEND': 'heavenleaves.storage_backends.SupabaseStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+    }
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
