@@ -1,12 +1,11 @@
 #!/bin/bash
 
-# Install dependencies
+set -e
+
+echo "Installing dependencies..."
 pip install -r requirements.txt
 
-# Collect static files
-python manage.py collectstatic --noinput
-
-# Make Python files executable
-chmod +x heavenleaves/wsgi.py
+echo "Running migrations..."
+python manage.py migrate --noinput
 
 echo "Build complete"
